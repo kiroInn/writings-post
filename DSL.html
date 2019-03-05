@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+
+</head>
+<body>
+<div id="output"></div>
+<script id="entry" type="text/html">
+  <div class="container">
+    <div>{{user.name}}</div>
+    <ul>
+      <li dsl-for="item for user.hobby">{{item}}</li>
+    </ul>
+  </div>
+</script>
+<script type="text/javascript">
+  const DSL = {
+    compile: function (templateStr, data) {
+      //1 parse  => AST
+      //2 AST => render function
+
+      console.log(templateStr)
+      templateStr.replace(/<(?:"[^"]*"['"]*|'[^']*'['"]*|[^'">])+>/g, function (match, name) {
+        console.log(match, name);
+        // if (match.charAt(0) == '\\')
+        //   return match.slice(1);
+        // var index = Number(name)
+        // if (index >= 0)
+        //   return array[index];
+        // if (object && object[name] !== void 0)
+        //   return object[name];
+        // return '';
+      });
+
+      return `${templateStr}`;
+    }
+  }
+  const user = {
+    name: 'Kim Wang',
+    hobby: ['watching', 'reading', 'swimming', 'surfing']
+  }
+  document.getElementById('output').innerHTML = DSL.compile(document.getElementById('entry').innerText, user)
+</script>
+</body>
+</html>
