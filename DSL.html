@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Title</title>
 
 </head>
+
 <body>
-<div id="output"></div>
-<script id="entry" type="text/html">
+  <div id="output"></div>
+  <script id="entry" type="text/html">
   <div class="container">
     <div>{{user.name}}</div>
     <ul>
@@ -15,33 +17,71 @@
     </ul>
   </div>
 </script>
-<script type="text/javascript">
-  const DSL = {
-    compile: function (templateStr, data) {
-      //1 parse  => AST
-      //2 AST => render function
+  <script type="text/javascript">
+    class DSL {
+      constructor(options) {
+        const { entry, data } = options;
+        this.templateStr = document.getElementById(entry).innerText;
+        this.data = data;
+      }
 
-      console.log(templateStr)
-      templateStr.replace(/<(?:"[^"]*"['"]*|'[^']*'['"]*|[^'">])+>/g, function (match, name) {
-        console.log(match, name);
-        // if (match.charAt(0) == '\\')
-        //   return match.slice(1);
-        // var index = Number(name)
-        // if (index >= 0)
-        //   return array[index];
-        // if (object && object[name] !== void 0)
-        //   return object[name];
-        // return '';
-      });
+      init() {
+        const nodes = this.transclude()
+        console.log('dom nodes:', nodes);
+        const asts = this.compile(nodes);
+        console.log('ast nodes:', asts);
+        return `${this.templateStr}`;
+      }
 
-      return `${templateStr}`;
+      transclude() {
+        const div = document.createElement("div")
+        div.innerHTML = this.templateStr.trim();
+        return div;
+      }
+
+
+      compile() {
+
+        return 'ast nodes';
+      }
+
+      compileNode(node) {
+        var type = node.nodeType
+        if (type === 1) {
+          console.log('compileElement')
+          // return compileElement(node, options)
+        } else if (type === 3 && node.data.trim()) {
+          console.log('compileTextNode')
+          // return compileTextNode(node, options)
+        } else {
+          return null
+        }
+      }
+
+      compileNodeList(nodes){
+        const result = [];
+        if(!nodes || nodes.length < 0){
+          return result;
+        }  
+        nodes.forEach(nodes => {
+          result.push(compileNode(nodes))
+        });
+        return result;
+      }
+
     }
-  }
-  const user = {
-    name: 'Kim Wang',
-    hobby: ['watching', 'reading', 'swimming', 'surfing']
-  }
-  document.getElementById('output').innerHTML = DSL.compile(document.getElementById('entry').innerText, user)
-</script>
+    const user = {
+      name: 'Kim Wang',
+      hobby: ['watching', 'reading', 'swimming', 'surfing']
+    }
+
+    const dsl = new DSL({
+      entry: 'entry',
+      data: user,
+    })
+
+    document.getElementById('output').innerHTML = dsl.init();
+  </script>
 </body>
+
 </html>
