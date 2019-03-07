@@ -20,29 +20,56 @@
   <script type="text/javascript">
     class DSL {
       constructor(options) {
-        const { entry, data } = options;
-        this.templateStr = document.getElementById(entry).innerText;
+        const { el, data } = options;
+        this.templateStr = document.getElementById(el).innerText;
         this.data = data;
       }
 
       init() {
-        const nodes = this.transclude()
-        console.log('dom nodes:', nodes);
-        const asts = this.compile(nodes);
-        console.log('ast nodes:', asts);
+        const node = this.transclude()
+        console.log('dom nodes:', node);
+        const astNode = this.compile(node);
+        console.log('ast nodes:', astNode);
         return `${this.templateStr}`;
       }
 
       transclude() {
         const div = document.createElement("div")
         div.innerHTML = this.templateStr.trim();
-        return div;
+        return div.children[0];
       }
 
 
-      compile() {
+      compile(el) {
 
-        return 'ast nodes';
+        return {
+          tag: "div",
+          type: 1,
+          staticRoot: false,
+          static: false,
+          plain: true,
+          parent: undefined,
+          attrsList: [],
+          attrsMap: {},
+          children: [
+            {
+              tag: "p",
+              type: 1,
+              staticRoot: false,
+              static: false,
+              plain: true,
+              parent: {tag: "div", ...},
+              attrsList: [],
+              attrsMap: {},
+              children: [{
+                type: 2,
+                text: "{{name}}",
+                static: false,
+                expression: "_s(name)"
+              }]
+            }
+          ]
+        };
       }
 
       compileNode(node) {
@@ -75,12 +102,12 @@
       hobby: ['watching', 'reading', 'swimming', 'surfing']
     }
 
-    const dsl = new DSL({
-      entry: 'entry',
+    const vm = new DSL({
+      el: 'entry',
       data: user,
     })
 
-    document.getElementById('output').innerHTML = dsl.init();
+    document.getElementById('output').innerHTML = vm.init();
   </script>
 </body>
 
