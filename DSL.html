@@ -23,6 +23,7 @@
         const { el, data } = options;
         this.templateStr = document.getElementById(el).innerText;
         this.data = data;
+        this.init();
       }
 
       init() {
@@ -41,7 +42,6 @@
 
 
       compile(el) {
-
         return {
           tag: "div",
           type: 1,
@@ -72,28 +72,20 @@
         };
       }
 
-      compileNode(node) {
-        var type = node.nodeType
-        if (type === 1) {
-          console.log('compileElement')
-          // return compileElement(node, options)
-        } else if (type === 3 && node.data.trim()) {
-          console.log('compileTextNode')
-          // return compileTextNode(node, options)
-        } else {
-          return null
-        }
+      mount(vNode, data){
+        console.log("mount")
+        this.generalDom(vNode.tplFun())
       }
 
-      compileNodeList(nodes){
-        const result = [];
-        if(!nodes || nodes.length < 0){
-          return result;
-        }  
-        nodes.forEach(nodes => {
-          result.push(compileNode(nodes))
-        });
-        return result;
+      generalDom(domStr){
+
+        if (domStr instanceof Object) {
+          return domStr.value;
+        }
+
+        var temp = document.createElement("div");
+        temp.innerHTML = domStr.trim();
+        return $temp.childNodes[0];
       }
 
     }
@@ -107,7 +99,7 @@
       data: user,
     })
 
-    document.getElementById('output').innerHTML = vm.init();
+    document.getElementById('output').innerHTML = vm.mount();
   </script>
 </body>
 
