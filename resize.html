@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .resizer{
+            background-color: aquamarine;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 200px;
+            text-align: center;
+        }
+        .pointer{
+            width: 10px;
+            height: 10px;
+            border-radius: 50%; /*magic to turn square into circle*/
+            background: white;
+            border: 3px solid #4286f4;
+            position: absolute;
+            cursor: n-resize;
+            top: -7px;
+        }
+        .pointer-wrapper{
+            border-top: 2px solid pink;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        .pointer-wrapper:hover{
+            border-top: 4px solid palevioletred;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="resizer">
+        <div class="pointer-wrapper">
+            <div class="pointer"></div>
+        </div> 
+        resizer
+    </div>
+    <script type="text/javascript">
+      const minimum_size = 200;
+      let original_height = 200;
+      let original_y = 0;
+      let original_mouse_y = 0;
+    const element = document.querySelector('.resizer')
+    const currentResizer = document.querySelector('.pointer')
+    currentResizer.addEventListener('mousedown', function(e) {
+      e.preventDefault()
+      original_height = parseFloat(getComputedStyle(element, null).getPropertyValue('height').replace('px', ''));
+      original_y = element.getBoundingClientRect().top;
+      original_mouse_y = e.pageY;
+      window.addEventListener('mousemove', resize)
+      window.addEventListener('mouseup', stopResize)
+    })
+    function resize(e) {
+        const height = original_height - (e.pageY - original_mouse_y)
+        if (height > minimum_size) {
+          element.style.height = height + 'px'
+        }
+    }
+    function stopResize() {
+      window.removeEventListener('mousemove', resize)
+    }
+    </script>
+</body>
+</html>
